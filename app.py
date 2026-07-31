@@ -6,6 +6,12 @@ import os
 
 app = Flask(__name__)
 
+try:
+    from db import init_db
+    init_db()
+except Exception as e:
+    print(e)
+
 # ==========================
 # データベース接続
 # ==========================
