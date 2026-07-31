@@ -1,4 +1,4 @@
-CREATE TABLE transportation (
+CREATE TABLE IF NOT EXISTS transportation (
 
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
@@ -19,7 +19,7 @@ CREATE TABLE transportation (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE submissions (
+CREATE TABLE IF NOT EXISTS submissions (
 
     name TEXT NOT NULL,
     month TEXT NOT NULL,
