@@ -16,6 +16,9 @@
 
     <form method="POST" action="/update/{{ transportation.id }}">
 
+        <input type="hidden" name="name" value="{{ transportation.name }}">
+　　　　　<input type="hidden" name="month" value="{{ transportation.month }}">
+
         <label>開始日</label>
         <input type="date" name="start_date"
                value="{{ transportation.start_date }}" required>
@@ -66,9 +69,10 @@
             💾 保存
         </button>
 
-        <a href="/" style="margin-left:20px;">
-            戻る
-        </a>
+        <a href="/?name={{ transportation.name }}&month={{ transportation.month }}"
+   style="margin-left:20px;">
+    戻る
+</a>
 
     </form>
 
