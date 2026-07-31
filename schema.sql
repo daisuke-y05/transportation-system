@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS transportation (
+CREATE TABLE transportation (
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
     name TEXT NOT NULL,
     month TEXT NOT NULL,
@@ -19,16 +19,12 @@ CREATE TABLE IF NOT EXISTS transportation (
     updated_at TEXT NOT NULL
 );
 
-
-CREATE TABLE IF NOT EXISTS submissions (
-
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE submissions (
 
     name TEXT NOT NULL,
-
     month TEXT NOT NULL,
 
-    submitted_at TEXT NOT NULL,
+    submitted_at TIMESTAMP NOT NULL,
 
     UNIQUE(name, month)
 

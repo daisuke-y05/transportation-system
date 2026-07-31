@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
-import sqlite3
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from db import get_db_connection
 import os
 
 app = Flask(__name__)
@@ -10,23 +10,6 @@ app = Flask(__name__)
 # データベース接続
 # ==========================
 
-DATABASE = "database.db"
-
-
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def init_db():
-
-    if os.path.exists(DATABASE):
-        return
-
-    with get_db_connection() as conn:
-        with open("schema.sql", "r", encoding="utf-8") as f:
-            conn.executescript(f.read())
 
 
 # ==========================
@@ -86,8 +69,8 @@ def index():
 
                 FROM transportation
 
-                WHERE name=?
-                AND month=?
+                WHERE name=%s
+                AND month=%s
 
                 ORDER BY start_date DESC,id DESC
 
@@ -154,7 +137,7 @@ def add():
 
             )
 
-            VALUES(?,?,?,?,?,?,?,?,?,?)
+            VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
 
         """, (
 
@@ -190,7 +173,7 @@ def edit(id):
 
             FROM transportation
 
-            WHERE id=?
+            WHERE id=%s
 
         """, (id,)).fetchone()
 
@@ -219,16 +202,16 @@ def update(id):
             UPDATE transportation
 
             SET
-                start_date=?,
-                end_date=?,
-                departure=?,
-                destination=?,
-                transport=?,
-                trip_type=?,
-                fare=?,
-                updated_at=?
+              start_date=%s,
+              end_date=%s,
+              departure=%s,
+              destination=%s,
+              transport=%s,
+              trip_type=%s,
+              fare=%s,
+              updated_at=%s
 
-            WHERE id=?
+            WHERE id=%s
 
         """, (
 
@@ -266,7 +249,7 @@ def delete(id):
 
             FROM transportation
 
-            WHERE id=?
+            WHERE id=%s
 
         """, (id,)).fetchone()
 
@@ -274,7 +257,7 @@ def delete(id):
 
             DELETE FROM transportation
 
-            WHERE id=?
+            WHERE id=%s
 
         """, (id,))
 
@@ -301,13 +284,16 @@ def submit():
 
         conn.execute("""
 
-            INSERT OR REPLACE INTO submissions(
-                name,
-                month,
-                submitted_at
-            )
+            INSERT INTO submissions (
+    name,
+    month,
+    submitted_at
+)
+VALUES (%s, %s, %s)
 
-            VALUES(?,?,?)
+ON CONFLICT(name, month)
+DO UPDATE SET
+submitted_at = EXCLUDED.submitted_at
 
         """, (
 
@@ -363,7 +349,7 @@ def admin():
                     ON s.name=t.name
                     AND s.month=t.month
 
-                WHERE s.month=?
+                WHERE s.month=%s
 
                 GROUP BY
 
@@ -435,9 +421,9 @@ def detail(name, month):
             FROM transportation
 
             WHERE
-                name=?
+                name=%s
             AND
-                month=?
+                month=%s
 
             ORDER BY start_date
 
@@ -466,14 +452,10 @@ def detail(name, month):
 # ==========================
 # 起動
 # ==========================
-import os
 
 if __name__ == "__main__":
-
-    init_db()
 
     app.run(
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 5000))
     )
-    
