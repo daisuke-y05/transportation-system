@@ -453,7 +453,11 @@ def detail(name, month):
 # 起動
 # ==========================
 
+from db import get_db_connection, init_db
+
 if __name__ == "__main__":
+
+    init_db()
 
     app.run(
         host="0.0.0.0",
