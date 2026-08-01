@@ -375,12 +375,12 @@ def admin():
 
                 SELECT
 
+                    SELECT
                     s.name,
                     s.month,
                     s.submitted_at,
-
-                    MAX(t.updated_at) AS updated_at
-
+                    MAX(TO_TIMESTAMP(t.updated_at, 'YYYY-MM-DD HH24:MI:SS')) AS updated_at
+                
                 FROM submissions s
 
                 LEFT JOIN transportation t
