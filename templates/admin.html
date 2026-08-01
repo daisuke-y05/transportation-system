@@ -84,21 +84,21 @@
 
                 <td>
 
-                    {% if row.updated_at and row.updated_at > row.submitted_at %}
+    {% if row.edited_after_submit %}
 
-                        <span class="statusEdit">
-                            ⚠️ 提出後に編集あり
-                        </span>
+        <span class="statusEdit">
+            ⚠️ 提出後に編集あり
+        </span>
 
-                    {% else %}
+    {% else %}
 
-                        <span class="statusOK">
-                            ✅ 提出済み
-                        </span>
+        <span class="statusOK">
+            ✅ 提出済み
+        </span>
 
-                    {% endif %}
+    {% endif %}
 
-                </td>
+</td>
 
 
                 <td>

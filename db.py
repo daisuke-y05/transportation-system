@@ -1,58 +1,30 @@
+import os
+from pathlib import Path
+
 import psycopg
 from psycopg.rows import dict_row
 from config import Config
 
 
 def get_db_connection():
+    connect_kwargs = {"row_factory": dict_row}
+
+    if os.environ.get("RENDER") == "true":
+        connect_kwargs["sslmode"] = "require"
+
     return psycopg.connect(
         Config.DATABASE_URL,
-        row_factory=dict_row
+        **connect_kwargs
     )
 
 
 def init_db():
 
+    schema_path = Path(__file__).with_name("schema.sql")
+
+    with schema_path.open("r", encoding="utf-8") as f:
+        schema_sql = f.read()
+
     with get_db_connection() as conn:
-
-        conn.execute("""
-
-        CREATE TABLE IF NOT EXISTS transportation (
-
-            id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-
-            name TEXT NOT NULL,
-            month TEXT NOT NULL,
-
-            start_date TEXT NOT NULL,
-            end_date TEXT NOT NULL,
-
-            departure TEXT NOT NULL,
-            destination TEXT NOT NULL,
-
-            transport TEXT NOT NULL,
-            trip_type TEXT NOT NULL,
-
-            fare INTEGER NOT NULL,
-
-            updated_at TEXT NOT NULL
-
-        );
-
-        """)
-
-        conn.execute("""
-
-        CREATE TABLE IF NOT EXISTS submissions (
-
-            name TEXT NOT NULL,
-            month TEXT NOT NULL,
-
-            submitted_at TIMESTAMP NOT NULL,
-
-            UNIQUE(name, month)
-
-        );
-
-        """)
-
+        conn.execute(schema_sql)
         conn.commit()

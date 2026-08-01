@@ -345,22 +345,21 @@ def admin():
                     s.name,
                     s.month,
                     s.submitted_at,
-                    MAX(TO_TIMESTAMP(t.updated_at, 'YYYY-MM-DD HH24:MI:SS')) AS updated_at
+
+                    CASE
+                        WHEN EXISTS (
+                            SELECT 1
+                            FROM transportation t
+                            WHERE t.name = s.name
+                              AND t.month = s.month
+                              AND to_timestamp(t.updated_at, 'YYYY-MM-DD HH24:MI:SS')::timestamp > s.submitted_at
+                        ) THEN TRUE
+                        ELSE FALSE
+                    END AS edited_after_submit
 
                 FROM submissions s
 
-                LEFT JOIN transportation t
-
-                    ON s.name = t.name
-                    AND s.month = t.month
-
                 WHERE s.month = %s
-
-                GROUP BY
-
-                    s.name,
-                    s.month,
-                    s.submitted_at
 
                 ORDER BY
 
@@ -377,20 +376,19 @@ def admin():
                     s.name,
                     s.month,
                     s.submitted_at,
-                    MAX(TO_TIMESTAMP(t.updated_at, 'YYYY-MM-DD HH24:MI:SS')) AS updated_at
+
+                    CASE
+                        WHEN EXISTS (
+                            SELECT 1
+                            FROM transportation t
+                            WHERE t.name = s.name
+                              AND t.month = s.month
+                              AND to_timestamp(t.updated_at, 'YYYY-MM-DD HH24:MI:SS')::timestamp > s.submitted_at
+                        ) THEN TRUE
+                        ELSE FALSE
+                    END AS edited_after_submit
 
                 FROM submissions s
-
-                LEFT JOIN transportation t
-
-                    ON s.name = t.name
-                    AND s.month = t.month
-
-                GROUP BY
-
-                    s.name,
-                    s.month,
-                    s.submitted_at
 
                 ORDER BY
 
