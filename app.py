@@ -342,7 +342,6 @@ def admin():
 
                 SELECT
 
-                    SELECT
                     s.name,
                     s.month,
                     s.submitted_at,
@@ -352,10 +351,10 @@ def admin():
 
                 LEFT JOIN transportation t
 
-                    ON s.name=t.name
-                    AND s.month=t.month
+                    ON s.name = t.name
+                    AND s.month = t.month
 
-                WHERE s.month=%s
+                WHERE s.month = %s
 
                 GROUP BY
 
@@ -375,18 +374,17 @@ def admin():
 
                 SELECT
 
-                    SELECT
                     s.name,
                     s.month,
                     s.submitted_at,
                     MAX(TO_TIMESTAMP(t.updated_at, 'YYYY-MM-DD HH24:MI:SS')) AS updated_at
-                
+
                 FROM submissions s
 
                 LEFT JOIN transportation t
 
-                    ON s.name=t.name
-                    AND s.month=t.month
+                    ON s.name = t.name
+                    AND s.month = t.month
 
                 GROUP BY
 
