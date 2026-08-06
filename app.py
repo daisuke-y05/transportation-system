@@ -2,16 +2,23 @@ from flask import Flask, render_template, request, redirect
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from db import get_db_connection
+from config import Config
 import os
 
 app = Flask(__name__)
+
+@app.context_processor
+def inject_app_info():
+    return {
+        "app_name": Config.APP_NAME,
+        "app_version": Config.APP_VERSION
+    }
 
 try:
     from db import init_db
     init_db()
 except Exception as e:
     print(e)
-
 # ==========================
 # データベース接続
 # ==========================
